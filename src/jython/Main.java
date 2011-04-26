@@ -37,7 +37,7 @@ public class Main {
         
         ScriptEngine rbengine = factory.getEngineByName("ruby");
         if (pyengine == null) {
-            throw new RuntimeException("Could not find python Engine");
+            throw new RuntimeException("Could not find ruby Engine");
         }
         Invocable rbiEngine = (Invocable) rbengine;
 

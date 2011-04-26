@@ -16,4 +16,8 @@ public class PrintThings {
     public void Hiya(){
         System.out.println("Hiya!");
     }
+    
+    public void Line(String str){
+        System.out.println(str);
+    }
 }

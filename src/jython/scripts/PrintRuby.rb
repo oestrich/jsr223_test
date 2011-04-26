@@ -12,6 +12,7 @@ class PrintRuby
     end
 
     def Update
+        @printer.Line "From ruby"
         @printer.Hiya
         @printer.Hello
     end

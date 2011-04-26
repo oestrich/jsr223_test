@@ -5,4 +5,5 @@ class PrintThis(IPrinter):
         self.printThings = PrintThings()
 
     def Update(self):
+        self.printThings.Line("From python 2")
         self.printThings.Hiya()

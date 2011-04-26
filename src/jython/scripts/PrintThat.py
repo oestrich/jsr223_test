@@ -7,5 +7,6 @@ class PrintThat(IPrinter):
 
     def Update(self):
         print self.counter
+        self.printThings.Line("From python 1")
         self.printThings.Hello()
         self.counter += 1

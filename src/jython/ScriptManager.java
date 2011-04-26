@@ -30,8 +30,19 @@ public class ScriptManager {
     private Invocable pyIEngine;
     
     public void run() throws ScriptException, FileNotFoundException, NoSuchMethodException{
+        loadEngines();
+        
+        loadScripts();
+        
+        for(int i = 0; i < 10; i++){
+            Update();
+        }
+    }
+    
+    private void loadEngines(){
         /* Get Scripting Engine */
         ScriptEngineManager factory = new ScriptEngineManager();
+        
         pyEngine = factory.getEngineByName("python");
         if (pyEngine == null) {
             throw new RuntimeException("Could not find python Engine");
@@ -42,14 +53,10 @@ public class ScriptManager {
         if (rbEngine == null) {
             throw new RuntimeException("Could not find ruby Engine");
         }
-        loadScripts();
-        
-        for(int i = 0; i < 10; i++){
-            Update();
-        }
     }
     
     private void loadScripts() throws ScriptException, FileNotFoundException, NoSuchMethodException {
+        // TODO: make a properties file
         File dir = new File("scripts");
         
         for(File file : dir.listFiles()){

@@ -23,6 +23,11 @@ import javax.script.ScriptException;
  */
 public class Main {
     private static List<IPrinter> printers = new LinkedList<IPrinter>();
+    
+    private static ScriptEngine pyEngine;
+    private static ScriptEngine rbEngine;
+    
+    private static Invocable pyIEngine;
 
     /**
      * @param args the command line arguments
@@ -30,18 +35,24 @@ public class Main {
     public static void main(String[] args) throws ScriptException, NoSuchMethodException, FileNotFoundException {
         /* Get Scripting Engine */
         ScriptEngineManager factory = new ScriptEngineManager();
-        ScriptEngine pyengine = factory.getEngineByName("python");
-        if (pyengine == null) {
+        pyEngine = factory.getEngineByName("python");
+        if (pyEngine == null) {
             throw new RuntimeException("Could not find python Engine");
         }
-        Invocable pyiEngine = (Invocable) pyengine;
+        pyIEngine = (Invocable) pyEngine;
         
-        ScriptEngine rbengine = factory.getEngineByName("ruby");
-        if (pyengine == null) {
+        rbEngine = factory.getEngineByName("ruby");
+        if (rbEngine == null) {
             throw new RuntimeException("Could not find ruby Engine");
         }
-        Invocable rbiEngine = (Invocable) rbengine;
+        loadScripts();
+        
+        for(int i = 0; i < 10; i++){
+            Update();
+        }
+    }
 
+    private static void loadScripts() throws ScriptException, FileNotFoundException, NoSuchMethodException {
         File dir = new File("scripts");
         
         for(File file : dir.listFiles()){
@@ -51,17 +62,13 @@ public class Main {
             int index = file.getName().lastIndexOf(".");
             String extension = file.getName().substring(index);
             
-            if(extension.equals("py")){
-                pyengine.eval(reader);
-                printers.add((IPrinter) pyiEngine.invokeFunction(file.getName().substring(0, index)));
+            if(extension.equals(".py")){
+                pyEngine.eval(reader);
+                printers.add((IPrinter) pyIEngine.invokeFunction(file.getName().substring(0, index)));
             }
             else if(extension.equals(".rb")){
-                printers.add((IPrinter) rbengine.eval(reader));
+                printers.add((IPrinter) rbEngine.eval(reader));
             }
-        }
-        
-        for(int i = 0; i < 10; i++){
-            Update();
         }
     }
     

@@ -5,6 +5,8 @@
 package jython;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -12,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
@@ -26,7 +27,7 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws ScriptException, NoSuchMethodException {
+    public static void main(String[] args) throws ScriptException, NoSuchMethodException, FileNotFoundException {
         /* Get Scripting Engine */
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine pyengine = factory.getEngineByName("python");
@@ -41,17 +42,20 @@ public class Main {
         }
         Invocable rbiEngine = (Invocable) rbengine;
 
-        File dir = new File("src/jython/scripts");
+        File dir = new File("scripts");
         
-        for(String file : dir.list()){
-            InputStream is = ClassLoader.getSystemResourceAsStream("jython/scripts/" + file); // use for relative to application
+        for(File file : dir.listFiles()){
+            InputStream is = new FileInputStream(file); // use for relative to application
             Reader reader = new InputStreamReader(is);
 
-            if(file.substring(file.length() - 3).equals(".py")){
+            int index = file.getName().lastIndexOf(".");
+            String extension = file.getName().substring(index);
+            
+            if(extension.equals("py")){
                 pyengine.eval(reader);
-                printers.add((IPrinter) pyiEngine.invokeFunction(file.substring(0, file.length() - 3)));
+                printers.add((IPrinter) pyiEngine.invokeFunction(file.getName().substring(0, index)));
             }
-            else if(file.substring(file.length() - 3).equals(".rb")){
+            else if(extension.equals(".rb")){
                 printers.add((IPrinter) rbengine.eval(reader));
             }
         }
